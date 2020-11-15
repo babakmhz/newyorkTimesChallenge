@@ -9,6 +9,7 @@ import com.android.babakmhz.newyorktimetopstories.utils.DATABASE_SCHEMA_VERSION
         version = DATABASE_SCHEMA_VERSION,
         exportSchema = false
 )
+@androidx.room.TypeConverters(TypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
         abstract fun topStoriesDao():TopStoriesDao
 

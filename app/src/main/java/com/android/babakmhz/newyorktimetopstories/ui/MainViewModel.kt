@@ -34,6 +34,11 @@ class MainViewModel @ViewModelInject constructor(
     private var _currentFragment = MutableLiveData<Fragment>()
     val currentFragment: LiveData<Fragment> = _currentFragment
 
+
+    private var _message = MutableLiveData<String>()
+    val message: LiveData<String> = _message
+
+
     init {
         _currentFragment.value = MainFragment.newInstance()
         fetchTopStories()
@@ -68,7 +73,13 @@ class MainViewModel @ViewModelInject constructor(
     fun bookmarkStory(story: Result) {
         mUiScope.launch {
             withContext(Dispatchers.IO) {
-                repositoryHelper.bookmarkStory(story)
+                try {
+                    repositoryHelper.bookmarkStory(story)
+                    _message.postValue("Story added to bookmarks!")
+                } catch (e: Exception) {
+                    AppLogger.e("$tag $e")
+                    _message.postValue("Error adding story to bookmarks!")
+                }
             }
         }
     }
@@ -76,16 +87,23 @@ class MainViewModel @ViewModelInject constructor(
     fun removeStoryFromBookmarks(id: Int) {
         mUiScope.launch {
             withContext(Dispatchers.IO) {
-                repositoryHelper.removeBookmark(id)
+
+                try {
+                    repositoryHelper.removeBookmark(id)
+                    _message.postValue("Story removed from bookmarks!")
+                } catch (e: Exception) {
+                    AppLogger.d("$tag : $e")
+                    _message.postValue("Error removing story from bookmarks!")
+                }
             }
         }
     }
 
-    fun onStoryClicked(story: Result) {
-
+    fun onStoryClicked(story: Result ) {
+        _selectedStory.postValue(story)
     }
 
-    fun setCurrentFragment(fragment:Fragment){
+    fun setCurrentFragment(fragment: Fragment) {
         _currentFragment.postValue(fragment)
     }
 

@@ -1,11 +1,13 @@
 package com.android.babakmhz.newyorktimetopstories.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.babakmhz.newyorktimetopstories.R
 import com.android.babakmhz.newyorktimetopstories.data.Result
 import com.android.babakmhz.newyorktimetopstories.databinding.FragmentMainBinding
-import com.android.babakmhz.newyorktimetopstories.utils.LiveDataWrapper
+import com.android.babakmhz.newyorktimetopstories.utils.*
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,7 +31,7 @@ class MainFragment : Fragment(), callBack {
     }
 
     private lateinit var fragmentMainBinding: FragmentMainBinding
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,8 +51,12 @@ class MainFragment : Fragment(), callBack {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupTopStoriesObserver()
+        setupMessagesObserver()
     }
 
+    private fun setupMessagesObserver() {
+        viewModel.message.observe(viewLifecycleOwner, messageObserver)
+    }
 
     private fun setupRecyclerAdapter(items: ArrayList<Result>) {
         if (items.isNotEmpty()) {
@@ -72,7 +79,32 @@ class MainFragment : Fragment(), callBack {
 
     }
 
+    private val messageObserver = Observer<String> {
+        if (it != null) {
+            Snackbar.make(fragmentMainBinding.root, it, Snackbar.LENGTH_LONG).show()
+        }
+
+    }
+
     override fun onItemClicked(story: Result) {
-        viewModel.onStoryClicked(story)
+        try {
+            viewModel.onStoryClicked(story)
+            val intent = Intent(activity,DetailsActivity::class.java)
+            intent.putExtra(INTENT_TITLE_KEY,story.title)
+            intent.putExtra(INTENT_DATE_KEY,story.publishedDate)
+            intent.putExtra(INTENT_URL_KEY,story.url)
+            intent.putExtra(INTENT_IMAGE_KEY,story.multimedia[1].url)
+            intent.putExtra(INTENT_ABSTRACT_KEY,story.abstract)
+            activity?.startActivity(intent)
+        } catch (e: Exception) {
+            Snackbar.make(fragmentMainBinding.root,"updating data...",Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onBookmarkClicked(added: Boolean, story: Result) {
+        if (added)
+            viewModel.bookmarkStory(story)
+        else
+            viewModel.removeStoryFromBookmarks(story.id)
     }
 }

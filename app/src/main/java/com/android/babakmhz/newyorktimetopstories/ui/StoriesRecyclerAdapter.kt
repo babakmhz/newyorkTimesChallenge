@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.databinding.BindingAdapter
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.android.babakmhz.newyorktimetopstories.R
 import com.android.babakmhz.newyorktimetopstories.data.Result
 import com.android.babakmhz.newyorktimetopstories.databinding.ItemStoriesBinding
 import com.bumptech.glide.Glide
@@ -51,28 +52,31 @@ class ItemsRecyclerAdapter(
         private val callback: callBack
     ) : RecyclerView.ViewHolder(itemView) {
 
-        object dBindingAdapter {
-            @BindingAdapter("imageUrl")
-            @JvmStatic
-            fun loadImage(view: ImageView, url: String?) {
-                Glide.with(view).load(url)
-                    .into(view)
-            }
-        }
 
         fun bind(story: Result) {
             itemsTemplateBinding.repo = story
             itemsTemplateBinding.executePendingBindings()
+            val imageView: ImageView = itemView.findViewById(R.id.poster)
+            try {
+                Glide.with(context).load(story.multimedia[0].url)
+                    .into(imageView)
+            } catch (e: Exception) {
+            }
+
+            val imageBookmark: ImageView = itemView.findViewById(R.id.image_bookmark)
+
+            imageBookmark.setOnClickListener {
+                callback.onBookmarkClicked(!story.bookmarked,story)
+            }
             itemsTemplateBinding.itemContainer.setOnClickListener {
                 callback.onItemClicked(story)
             }
-
         }
-
     }
 
 }
 
 public interface callBack {
     fun onItemClicked(story: Result)
+    fun onBookmarkClicked(added: Boolean = false, story: Result)
 }
