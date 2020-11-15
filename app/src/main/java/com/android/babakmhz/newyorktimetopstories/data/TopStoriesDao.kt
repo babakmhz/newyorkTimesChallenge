@@ -9,7 +9,7 @@ interface TopStoriesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStoriesToDb(result: List<Result>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun bookmarkStory(story: Result)
 
     @Transaction

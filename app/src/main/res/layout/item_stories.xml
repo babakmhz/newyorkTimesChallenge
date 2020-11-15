@@ -49,7 +49,7 @@
                 android:clickable="true"
                 android:id="@+id/image_bookmark"
                 android:focusable="true"
-                android:src="@drawable/ic_outline_bookmark_border_24"
+                android:src="@drawable/ic_baseline_bookmark_border_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/content_container" />
 

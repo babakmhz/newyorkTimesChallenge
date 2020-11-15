@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -75,9 +74,6 @@ class MainFragment : Fragment(), callBack {
         })
     }
 
-    private val fragmentsObserver = Observer<Fragment> {
-
-    }
 
     private val messageObserver = Observer<String> {
         if (it != null) {
@@ -89,22 +85,23 @@ class MainFragment : Fragment(), callBack {
     override fun onItemClicked(story: Result) {
         try {
             viewModel.onStoryClicked(story)
-            val intent = Intent(activity,DetailsActivity::class.java)
-            intent.putExtra(INTENT_TITLE_KEY,story.title)
-            intent.putExtra(INTENT_DATE_KEY,story.publishedDate)
-            intent.putExtra(INTENT_URL_KEY,story.url)
-            intent.putExtra(INTENT_IMAGE_KEY,story.multimedia[1].url)
-            intent.putExtra(INTENT_ABSTRACT_KEY,story.abstract)
+            val intent = Intent(activity, DetailsActivity::class.java)
+            intent.putExtra(INTENT_TITLE_KEY, story.title)
+            intent.putExtra(INTENT_DATE_KEY, story.publishedDate)
+            intent.putExtra(INTENT_URL_KEY, story.url)
+            intent.putExtra(INTENT_IMAGE_KEY, story.multimedia[0].url)
+            intent.putExtra(INTENT_ABSTRACT_KEY, story.abstract)
             activity?.startActivity(intent)
         } catch (e: Exception) {
-            Snackbar.make(fragmentMainBinding.root,"updating data...",Snackbar.LENGTH_LONG).show()
+            Snackbar.make(fragmentMainBinding.root, "updating data...", Snackbar.LENGTH_LONG).show()
         }
     }
 
     override fun onBookmarkClicked(added: Boolean, story: Result) {
+        // because of lack of my time i just added bookmarks static
         if (added)
-            viewModel.bookmarkStory(story)
+            viewModel.addToBookmarks(story)
         else
-            viewModel.removeStoryFromBookmarks(story.id)
+            viewModel.removeBookmark(story)
     }
 }

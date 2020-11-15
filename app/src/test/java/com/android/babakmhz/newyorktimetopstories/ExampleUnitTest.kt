@@ -1,17 +1,14 @@
 package com.android.babakmhz.newyorktimetopstories
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-import org.junit.Assert.*
-
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
+// due to lack of my time i was unable to create tests but as you know
+//        your code with test is reliable
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
+
         assertEquals(4, 2 + 2)
     }
 }

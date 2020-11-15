@@ -25,11 +25,13 @@ class MainViewModel @ViewModelInject constructor(
     private var _topStoriesLiveData = MutableLiveData<LiveDataWrapper<TopStories>>()
     val topStoriesLiveData: LiveData<LiveDataWrapper<TopStories>> = _topStoriesLiveData
 
+    private var _bookmarks = MutableLiveData<List<Result>>()
+    val bookmarks: LiveData<List<Result>> = _bookmarks
+    private val listBookmarks =  arrayListOf<Result>()
+
     private var _selectedStory = MutableLiveData<Result>()
     val selectedStory: LiveData<Result> = _selectedStory
 
-    private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> = _loading
 
     private var _currentFragment = MutableLiveData<Fragment>()
     val currentFragment: LiveData<Fragment> = _currentFragment
@@ -42,6 +44,17 @@ class MainViewModel @ViewModelInject constructor(
     init {
         _currentFragment.value = MainFragment.newInstance()
         fetchTopStories()
+    }
+
+
+    fun addToBookmarks(story: Result) {
+        listBookmarks.add(story)
+        _bookmarks.postValue(listBookmarks)
+    }
+
+    fun removeBookmark(story: Result) {
+        listBookmarks.remove(story)
+        _bookmarks.postValue(listBookmarks)
     }
 
     private fun fetchTopStories() {
@@ -58,9 +71,7 @@ class MainViewModel @ViewModelInject constructor(
                     val result = repositoryHelper.getTopStories()
                     repositoryHelper.insertStoriesToDb(result.results)
                     _topStoriesLiveData.postValue(LiveDataWrapper.success(result))
-                    _loading.postValue(false)
                 } catch (e: Exception) {
-                    _loading.postValue(false)
                     _topStoriesLiveData.postValue(LiveDataWrapper.error(e))
                     AppLogger.e("$tag $e")
                 }
@@ -70,36 +81,8 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
-    fun bookmarkStory(story: Result) {
-        mUiScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    repositoryHelper.bookmarkStory(story)
-                    _message.postValue("Story added to bookmarks!")
-                } catch (e: Exception) {
-                    AppLogger.e("$tag $e")
-                    _message.postValue("Error adding story to bookmarks!")
-                }
-            }
-        }
-    }
 
-    fun removeStoryFromBookmarks(id: Int) {
-        mUiScope.launch {
-            withContext(Dispatchers.IO) {
-
-                try {
-                    repositoryHelper.removeBookmark(id)
-                    _message.postValue("Story removed from bookmarks!")
-                } catch (e: Exception) {
-                    AppLogger.d("$tag : $e")
-                    _message.postValue("Error removing story from bookmarks!")
-                }
-            }
-        }
-    }
-
-    fun onStoryClicked(story: Result ) {
+    fun onStoryClicked(story: Result) {
         _selectedStory.postValue(story)
     }
 

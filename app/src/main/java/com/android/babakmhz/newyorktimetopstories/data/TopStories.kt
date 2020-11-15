@@ -55,5 +55,6 @@ data class StoriesBookmarked(
 @Entity(tableName = "Bookmark")
 data class Bookmark(
     @PrimaryKey(autoGenerate = true) var bookmark_id: Int,
+    @Embedded val story :Result
 )
 

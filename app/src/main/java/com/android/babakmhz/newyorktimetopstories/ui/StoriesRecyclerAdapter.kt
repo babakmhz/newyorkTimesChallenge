@@ -52,6 +52,23 @@ class ItemsRecyclerAdapter(
         private val callback: callBack
     ) : RecyclerView.ViewHolder(itemView) {
 
+        private fun toggleImageBookmark(bookmarked: Boolean, imageView: ImageView) {
+            if (bookmarked) {
+                imageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_baseline_bookmark_24
+                    )
+                )
+            } else {
+                imageView.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_baseline_bookmark_border_24
+                    )
+                )
+            }
+        }
 
         fun bind(story: Result) {
             itemsTemplateBinding.repo = story
@@ -64,10 +81,22 @@ class ItemsRecyclerAdapter(
             }
 
             val imageBookmark: ImageView = itemView.findViewById(R.id.image_bookmark)
+            //you do this with data binding also
+            if (story.bookmarked) {
+                imageBookmark.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_baseline_bookmark_24
+                    )
+                )
+            }
 
             imageBookmark.setOnClickListener {
-                callback.onBookmarkClicked(!story.bookmarked,story)
+                story.bookmarked = !story.bookmarked
+                toggleImageBookmark(story.bookmarked, it as ImageView)
+                callback.onBookmarkClicked(story.bookmarked, story)
             }
+
             itemsTemplateBinding.itemContainer.setOnClickListener {
                 callback.onItemClicked(story)
             }
