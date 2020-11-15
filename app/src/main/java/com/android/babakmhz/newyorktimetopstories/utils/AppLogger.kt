@@ -7,6 +7,10 @@ object AppLogger {
         Timber.plant(Timber.DebugTree())
     }
 
+    fun getTag(T: Class<*>): String {
+        return T.javaClass.simpleName
+    }
+
     fun d(s: String?, vararg objects: Any?) {
         Timber.d(s, objects)
     }

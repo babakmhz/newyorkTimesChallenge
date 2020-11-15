@@ -5,6 +5,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.2"
@@ -20,6 +21,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
@@ -70,8 +72,13 @@ ext {
     glide_version = '4.11.0'
     // hilt
     hilt_version = '2.29.1-alpha'
+    // hilt lifecycle
+    hiltLifecycle_version = '1.0.0-alpha02'
     // room
     room_version = '2.2.5'
+
+    //material
+    material_version = '1.3.0-alpha03'
 
 
     //testing libraries
