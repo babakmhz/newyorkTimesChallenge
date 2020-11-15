@@ -25,11 +25,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // initiating databindng
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         activityMainBinding.viewModel = viewModel
         activityMainBinding.executePendingBindings()
+        // setting up tabView
         setUpTabView()
-        setupObservers()
     }
 
     private fun setUpTabView() {
@@ -44,24 +45,10 @@ class MainActivity : AppCompatActivity() {
         viewPagerTab.setViewPager(viewPager);
     }
 
-    private fun setupObservers() {
-        setUpFragmentObserver()
-    }
 
 
 
 
-    private fun setUpFragmentObserver() {
-        val observer = Observer<Fragment> {
-//            if (it != null) {
-//                supportFragmentManager.beginTransaction()
-//                    .replace(R.id.container, it)
-//                    .commitNow()
-//            }
-        }
-
-        viewModel.currentFragment.observe(this, observer)
-    }
 
 
 }

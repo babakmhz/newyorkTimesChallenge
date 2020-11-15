@@ -31,11 +31,13 @@ class MainFragment : Fragment(), callBack {
 
     private lateinit var fragmentMainBinding: FragmentMainBinding
     private val viewModel: MainViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // initiating dataBinding
         fragmentMainBinding =
             DataBindingUtil.inflate(
                 inflater,
@@ -49,6 +51,7 @@ class MainFragment : Fragment(), callBack {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // setting up observers
         setupTopStoriesObserver()
         setupMessagesObserver()
     }
@@ -67,6 +70,7 @@ class MainFragment : Fragment(), callBack {
     }
 
     private fun setupTopStoriesObserver() {
+        // observing incoming data from liveData
         viewModel.topStoriesLiveData.observe(viewLifecycleOwner, {
             when (it.responseRESPONSESTATUS) {
                 LiveDataWrapper.RESPONSESTATUS.SUCCESS -> setupRecyclerAdapter(it.response!!.results)
@@ -76,6 +80,7 @@ class MainFragment : Fragment(), callBack {
 
 
     private val messageObserver = Observer<String> {
+        // observing message from liveData
         if (it != null) {
             Snackbar.make(fragmentMainBinding.root, it, Snackbar.LENGTH_LONG).show()
         }
@@ -83,6 +88,7 @@ class MainFragment : Fragment(), callBack {
     }
 
     override fun onItemClicked(story: Result) {
+        // launching details activity
         try {
             viewModel.onStoryClicked(story)
             val intent = Intent(activity, DetailsActivity::class.java)

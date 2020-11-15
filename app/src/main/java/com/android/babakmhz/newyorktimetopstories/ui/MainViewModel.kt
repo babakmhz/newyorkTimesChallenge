@@ -58,6 +58,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     private fun fetchTopStories() {
+        //  fetching data from repo
         mUiScope.launch {
             _topStoriesLiveData.postValue(LiveDataWrapper.loading())
             withContext(Dispatchers.IO) {

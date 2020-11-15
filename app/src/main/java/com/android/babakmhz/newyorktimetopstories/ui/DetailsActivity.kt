@@ -19,7 +19,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-
+        // fetching data
         text_title.text = intent.getStringExtra(INTENT_TITLE_KEY)
         text_date.text = intent.getStringExtra(INTENT_DATE_KEY)
         text_abstract.text = intent.getStringExtra(INTENT_ABSTRACT_KEY)
